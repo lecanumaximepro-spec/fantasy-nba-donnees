@@ -1,0 +1,40 @@
+
+name: Actualisation NBA 2026-27
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 7 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Recuperer le depot
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installer DuckDB
+        run: pip install 'duckdb>=1.2,<3'
+
+      - name: Exporter statistiques NBA
+        run: python export_nba.py
+
+      - name: Enregistrer les CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/nba_2027_9cat.csv data/status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualisation statistiques NBA"
+            git push
+          fi

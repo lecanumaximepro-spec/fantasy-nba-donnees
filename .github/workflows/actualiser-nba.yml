@@ -1,10 +1,12 @@
 
 name: Actualisation NBA 2026-27
 
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 7 * * *'
+    - cron: '30 16 * * *'
+      timezone: 'Europe/Paris'
 
 permissions:
   contents: write
